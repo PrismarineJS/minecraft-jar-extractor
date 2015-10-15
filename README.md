@@ -1,4 +1,6 @@
 # minecraft-jar-extractor
+[![NPM version](https://img.shields.io/npm/v/minecraft-jar-extractor.svg)](http://npmjs.com/package/minecraft-jar-extractor)
+
 Extract structured data from the minecraft jar
 
 How to use it:
@@ -8,3 +10,9 @@ How to use it:
 3. unzip it
 4. node protocol_extractor decompiled_source/
 5. get a protocol.json describing the classname<->id relation and some fields information
+
+## History
+
+### 0.0.0
+
+* imported from minecraft-data + description added
