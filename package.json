@@ -1,0 +1,27 @@
+{
+  "name": "minecraft-jar-extractor",
+  "version": "0.0.0",
+  "description": "Extract structured data from the minecraft jar",
+  "main": "protocol_extractor.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PrismarineJS/minecraft-jar-extractor.git"
+  },
+  "dependencies": {
+    "async":"~0.9.0"
+  },
+  "keywords": [
+    "minecraft",
+    "jar",
+    "extractor"
+  ],
+  "author": "Romain Beaumont <romain.rom1@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/PrismarineJS/minecraft-jar-extractor/issues"
+  },
+  "homepage": "https://github.com/PrismarineJS/minecraft-jar-extractor#readme"
+}
