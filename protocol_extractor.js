@@ -123,7 +123,7 @@ function processPacketDefinition(data)
   var fields=data
     .split("\n")
     .map(function(s){return s.trim()})
-    .filter(function(s){return s.indexOf("read")!=-1})
+    .filter(function(s){return s.indexOf(".read")!=-1})
     .map(function(s){
       var results= s.match(/read(.+?)\(/);
       return results[1];
