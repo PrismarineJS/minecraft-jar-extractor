@@ -45,6 +45,58 @@ const itemMapping={
   }
 };
 
+//TODO: read the decompiled code (automatically) to generate this
+const blockMapping={
+  "1.8.8":{
+    "log":"oak_log",
+    "planks":"oak_planks",
+    "sapling":"oak_sapling",
+    "leaves":"oak_leaves",
+    "tallgrass":"tall_grass",
+    "deadbush":"dead_bush",
+    "wool":"white_wool",
+    "piston_extension":"piston",
+    "yellow_flower":"dandelion",
+    "red_flower":"poppy",
+    "double_stone_slab":"stone_double_slab",
+    "stained_glass":"white_stained_glass",
+    "double_wooden_slab":"oak_double_slab",
+    "wooden_slab":"oak_slab",
+    "stained_hardened_clay":"white_stained_hardened_clay",
+    "stained_glass_pane":"white_stained_glass_pane",
+    "log2":"acacia_log",
+    "leaves2":"acacia_leaves",
+    "carpet":"white_carpet",
+    "double_plant":"sunflower",
+    "double_stone_slab2":"red_sandstone_double_slab",
+    "stone_slab2":"red_sandstone_slab"
+  },
+  "1.9":{
+    "log":"oak_log",
+    "planks":"oak_planks",
+    "sapling":"oak_sapling",
+    "leaves":"oak_leaves",
+    "tallgrass":"tall_grass",
+    "deadbush":"dead_bush",
+    "wool":"white_wool",
+    "piston_extension":"piston",
+    "yellow_flower":"dandelion",
+    "red_flower":"poppy",
+    "double_stone_slab":"stone_double_slab",
+    "stained_glass":"white_stained_glass",
+    "double_wooden_slab":"oak_double_slab",
+    "wooden_slab":"oak_slab",
+    "stained_hardened_clay":"white_stained_hardened_clay",
+    "stained_glass_pane":"white_stained_glass_pane",
+    "log2":"acacia_log",
+    "leaves2":"acacia_leaves",
+    "carpet":"white_carpet",
+    "double_plant":"sunflower",
+    "double_stone_slab2":"red_sandstone_double_slab",
+    "stone_slab2":"red_sandstone_slab"
+  }
+};
+
 function extractBlockState(name,path) {
   if(name===null)
     return null;
@@ -87,12 +139,14 @@ function getItems(unzippedFilesDir,itemsTexturesPath,itemMapping) {
   fs.writeFileSync(itemsTexturesPath, JSON.stringify(itemTextures, null, 2));
 }
 
-function getBlocks(unzippedFilesDir,blocksTexturesPath) {
+function getBlocks(unzippedFilesDir,blocksTexturesPath,blockMapping) {
   const blockModel = mcData.blocksArray.map(block => {
-    const model = extractBlockState(block.name, unzippedFilesDir + "/assets/minecraft/blockstates/");
+    const blockState=blockMapping[block.name] ? blockMapping[block.name] : block.name;
+    const model = extractBlockState(blockState, unzippedFilesDir + "/assets/minecraft/blockstates/");
     const texture = extractModel(model, unzippedFilesDir + "/assets/minecraft/models/block/");
     return {
       name: block.name,
+      blockState:blockState,
       model: model,
       texture: texture
     }
@@ -114,7 +168,7 @@ function extract(minecraftVersion,outputDir,temporaryDir,cb) {
     }
     fs.mkdirpSync(outputDir);
     getItems(unzippedFilesDir,outputDir+"/items_textures.json",itemMapping[minecraftVersion]);
-    getBlocks(unzippedFilesDir,outputDir+"/blocks_textures.json");
+    getBlocks(unzippedFilesDir,outputDir+"/blocks_textures.json",blockMapping[minecraftVersion]);
     copyTextures(unzippedFilesDir,outputDir);
     cb();
   });
