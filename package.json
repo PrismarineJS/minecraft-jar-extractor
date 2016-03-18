@@ -15,7 +15,7 @@
     "extract-zip": "^1.5.0",
     "minecraft-data": "^1.2.6",
     "minecraft-wrap": "^1.0.0",
-    "mock-fs": "^3.8.0"
+    "mkdirp": "^0.5.1"
   },
   "keywords": [
     "minecraft",

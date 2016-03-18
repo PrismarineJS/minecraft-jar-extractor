@@ -5,16 +5,17 @@ const path = require("path");
 const mcData = require("minecraft-data")("1.8");
 const getMinecraftFiles = require("./get_minecraft_files");
 
-if(process.argv.length != 5) {
-  console.log("Usage : node image_names.js <minecraftVersion> <blocks_textures> <items_textures>");
+if(process.argv.length != 6) {
+  console.log("Usage : node image_names.js <minecraftVersion> <blocks_textures> <items_textures> <temporary_dir>");
   process.exit(1);
 }
 
 const minecraftVersion=process.argv[2];
 const blocksTexturesPath=process.argv[3];
 const itemsTexturesPath=process.argv[4];
+const temporaryDir=process.argv[5];
 
-extract(minecraftVersion,blocksTexturesPath,itemsTexturesPath,function(err){
+extract(minecraftVersion,blocksTexturesPath,itemsTexturesPath,temporaryDir,function(err){
   if(err) {
     console.log(err.stack);
     return;
@@ -87,13 +88,14 @@ function getBlocks(unzippedFilesDir,blocksTexturesPath) {
 }
 
 
-function extract(minecraftVersion,itemsTexturesPath,blocksTexturesPath,cb) {
-  getMinecraftFiles(minecraftVersion, function (err, unzippedFilesDir) {
+function extract(minecraftVersion,itemsTexturesPath,blocksTexturesPath,temporaryDir,cb) {
+  getMinecraftFiles(minecraftVersion,temporaryDir, function (err, unzippedFilesDir) {
     if (err) {
       cb(err);
       return;
     }
     getItems(unzippedFilesDir,itemsTexturesPath);
     getBlocks(unzippedFilesDir,blocksTexturesPath);
+    cb();
   });
 }
