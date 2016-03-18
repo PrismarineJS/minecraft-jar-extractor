@@ -3,6 +3,14 @@
 
 Extract structured data from the minecraft jar
 
+## image name extractor
+
+Just run `node image_names.js <version1,version2,...> <output_dir> <temporary_dir>` and get a directory containing the name->texture mapping and the textures.
+
+Result of that currently online at [minecraft-assets](https://github.com/rom1504/minecraft-assets)
+
+## protocol extractor
+
 How to use it:
 
 1. download the server jar (for example using [node-minecraft-wrap](https://github.com/rom1504/node-minecraft-wrap))
