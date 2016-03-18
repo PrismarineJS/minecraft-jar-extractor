@@ -113,8 +113,8 @@ function extract(minecraftVersion,outputDir,temporaryDir,cb) {
       return;
     }
     fs.mkdirpSync(outputDir);
-    getItems(unzippedFilesDir,outputDir+"/blocks_textures.json",itemMapping[minecraftVersion]);
-    getBlocks(unzippedFilesDir,outputDir+"/items_textures.json");
+    getItems(unzippedFilesDir,outputDir+"/items_textures.json",itemMapping[minecraftVersion]);
+    getBlocks(unzippedFilesDir,outputDir+"/blocks_textures.json");
     copyTextures(unzippedFilesDir,outputDir);
     cb();
   });
