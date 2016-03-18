@@ -1,11 +1,11 @@
 const downloadClient = require("minecraft-wrap").downloadClient;
 const extract = require('extract-zip');
-const mkdirp = require("mkdirp");
+const fs = require("fs-extra");
 
 function getMinecraftFiles(minecraftVersion,temporaryDir,cb) {
   const jarPath=temporaryDir+'/'+minecraftVersion+'.jar';
   const unzippedFilesDir=temporaryDir+'/'+minecraftVersion;
-  mkdirp.sync(unzippedFilesDir);
+  fs.mkdirpSync(unzippedFilesDir);
   downloadClient(minecraftVersion, jarPath, function (err) {
     if(err) {
       cb(err);

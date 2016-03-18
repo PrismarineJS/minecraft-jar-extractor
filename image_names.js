@@ -1,35 +1,48 @@
 'use strict';
 
-const fs = require("fs");
+const fs = require("fs-extra");
 const path = require("path");
 const mcData = require("minecraft-data")("1.8");
 const getMinecraftFiles = require("./get_minecraft_files");
 
-if(process.argv.length != 6) {
-  console.log("Usage : node image_names.js <minecraftVersion> <blocks_textures> <items_textures> <temporary_dir>");
+if(process.argv.length != 5) {
+  console.log("Usage : node image_names.js <version1,version2,...> <output_dir> <temporary_dir>");
   process.exit(1);
 }
 
-const minecraftVersion=process.argv[2];
-const blocksTexturesPath=process.argv[3];
-const itemsTexturesPath=process.argv[4];
-const temporaryDir=process.argv[5];
+const minecraftVersions=process.argv[2].split(",");
+const outputDir=path.resolve(process.argv[3]);
+const temporaryDir=path.resolve(process.argv[4]);
 
-extract(minecraftVersion,blocksTexturesPath,itemsTexturesPath,temporaryDir,function(err){
-  if(err) {
-    console.log(err.stack);
-    return;
-  }
-  console.log("done !");
+minecraftVersions.forEach(minecraftVersion => {
+  extract(minecraftVersion,outputDir+"/"+minecraftVersion,temporaryDir,function(err){
+    if(err) {
+      console.log(err.stack);
+      return;
+    }
+    console.log("done "+minecraftVersion+"!");
+  });
 });
 
+// doesn't support 1.7.10 : completely different organization (no block state, no model)
 const itemMapping={
-  "wooden_door":"oak_door",
-  "fish":"pufferfish",
-  "cooked_fish":"cooked_salmon",
-  "dye":"dye_black",
-  "potion":"bottle_drinkable",
-  "skull":"skull_char"
+  "1.8.8":{
+    "wooden_door":"oak_door",
+    "fish":"pufferfish",
+    "cooked_fish":"cooked_salmon",
+    "dye":"dye_black",
+    "potion":"bottle_drinkable",
+    "skull":"skull_char"
+  },
+  "1.9":{
+    "wooden_door":"oak_door",
+    "fish":"pufferfish",
+    "cooked_fish":"cooked_salmon",
+    "dye":"dye_black",
+    "potion":"bottle_drinkable",
+    "skull":"skull_char",
+    "boat":"oak_boat"
+  }
 };
 
 function extractBlockState(name,path) {
@@ -61,7 +74,7 @@ function extractModel(name,path) {
   }
 }
 
-function getItems(unzippedFilesDir,itemsTexturesPath) {
+function getItems(unzippedFilesDir,itemsTexturesPath,itemMapping) {
   const itemTextures = mcData.itemsArray.map(item => {
     const model = itemMapping[item.name] ? itemMapping[item.name] : item.name;
     const texture = extractModel(model, unzippedFilesDir + "/assets/minecraft/models/item/");
@@ -87,15 +100,22 @@ function getBlocks(unzippedFilesDir,blocksTexturesPath) {
   fs.writeFileSync(blocksTexturesPath, JSON.stringify(blockModel, null, 2));
 }
 
+function copyTextures(unzippedFilesDir,outputDir) {
+  fs.copySync(unzippedFilesDir+'/assets/minecraft/textures/blocks', outputDir+"/blocks");
+  fs.copySync(unzippedFilesDir+'/assets/minecraft/textures/items', outputDir+"/items");
+}
 
-function extract(minecraftVersion,itemsTexturesPath,blocksTexturesPath,temporaryDir,cb) {
+
+function extract(minecraftVersion,outputDir,temporaryDir,cb) {
   getMinecraftFiles(minecraftVersion,temporaryDir, function (err, unzippedFilesDir) {
     if (err) {
       cb(err);
       return;
     }
-    getItems(unzippedFilesDir,itemsTexturesPath);
-    getBlocks(unzippedFilesDir,blocksTexturesPath);
+    fs.mkdirpSync(outputDir);
+    getItems(unzippedFilesDir,outputDir+"/blocks_textures.json",itemMapping[minecraftVersion]);
+    getBlocks(unzippedFilesDir,outputDir+"/items_textures.json");
+    copyTextures(unzippedFilesDir,outputDir);
     cb();
   });
 }

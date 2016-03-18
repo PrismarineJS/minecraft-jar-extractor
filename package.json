@@ -13,9 +13,9 @@
   "dependencies": {
     "async": "~0.9.0",
     "extract-zip": "^1.5.0",
+    "fs-extra": "^0.26.7",
     "minecraft-data": "^1.2.6",
-    "minecraft-wrap": "^1.0.0",
-    "mkdirp": "^0.5.1"
+    "minecraft-wrap": "^1.0.0"
   },
   "keywords": [
     "minecraft",
