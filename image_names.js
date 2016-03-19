@@ -159,6 +159,15 @@ function copyTextures(unzippedFilesDir,outputDir) {
   fs.copySync(unzippedFilesDir+'/assets/minecraft/textures/items', outputDir+"/items");
 }
 
+function generateTextureContent(outputDir) {
+  const blocksItems=require(outputDir+"/items_textures.json").concat(require(outputDir+"/blocks_textures.json"));
+  const arr=blocksItems.map(b => ({
+    name:b.name,
+    texture:b.texture==null ? null :
+      ("data:image/png;base64,"+fs.readFileSync(outputDir+"/"+b.texture+".png","base64"))
+  }));
+  fs.writeFileSync(outputDir+"/texture_content.json",JSON.stringify(arr,null,2));
+}
 
 function extract(minecraftVersion,outputDir,temporaryDir,cb) {
   getMinecraftFiles(minecraftVersion,temporaryDir, function (err, unzippedFilesDir) {
@@ -170,6 +179,7 @@ function extract(minecraftVersion,outputDir,temporaryDir,cb) {
     getItems(unzippedFilesDir,outputDir+"/items_textures.json",itemMapping[minecraftVersion]);
     getBlocks(unzippedFilesDir,outputDir+"/blocks_textures.json",blockMapping[minecraftVersion]);
     copyTextures(unzippedFilesDir,outputDir);
+    generateTextureContent(outputDir);
     cb();
   });
 }
