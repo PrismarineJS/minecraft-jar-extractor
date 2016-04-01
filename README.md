@@ -13,11 +13,9 @@ Result of that currently online at [minecraft-assets](https://github.com/rom1504
 
 How to use it:
 
-1. download the server jar (for example using [node-minecraft-wrap](https://github.com/rom1504/node-minecraft-wrap))
-2. decompile it (for example using [fernflower](https://github.com/fesh0r/fernflower))
-3. unzip it
-4. node protocol_extractor decompiled_source/
-5. get a protocol.json describing the classname<->id relation and some fields information
+1. `node downloadDecompile.js 1.8.8 /tmp/the_output`
+2. `node protocol_extractor.js /tmp/the_output/decompiled`
+3. get a protocol.json describing the classname<->id relation and some fields information
 
 ## History
 
