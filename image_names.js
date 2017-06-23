@@ -2,7 +2,6 @@
 
 const fs = require("fs-extra");
 const path = require("path");
-const mcData = require("minecraft-data")("1.8");
 const getMinecraftFiles = require("./get_minecraft_files");
 
 if(process.argv.length != 5) {
@@ -41,7 +40,44 @@ const itemMapping={
     "dye":"dye_black",
     "potion":"bottle_drinkable",
     "skull":"skull_char",
-    "boat":"oak_boat"
+    "boat":"oak_boat",
+    "splash_potion":"bottle_splash",
+    "lingering_potion":"bottle_lingering"
+  },
+  "1.10":{
+    "wooden_door":"oak_door",
+    "fish":"pufferfish",
+    "cooked_fish":"cooked_salmon",
+    "dye":"dye_black",
+    "potion":"bottle_drinkable",
+    "skull":"skull_char",
+    "boat":"oak_boat",
+    "splash_potion":"bottle_splash",
+    "lingering_potion":"bottle_lingering"
+  },
+  "1.11.2":{
+    "wooden_door":"oak_door",
+    "fish":"pufferfish",
+    "cooked_fish":"cooked_salmon",
+    "dye":"dye_black",
+    "potion":"bottle_drinkable",
+    "skull":"skull_char",
+    "boat":"oak_boat",
+    "totem_of_undying":"totem",
+    "splash_potion":"bottle_splash",
+    "lingering_potion":"bottle_lingering"
+  },
+  "1.12":{
+    "wooden_door":"oak_door",
+    "fish":"pufferfish",
+    "cooked_fish":"cooked_salmon",
+    "dye":"dye_black",
+    "potion":"bottle_drinkable",
+    "skull":"skull_char",
+    "boat":"oak_boat",
+    "totem_of_undying":"totem",
+    "splash_potion":"bottle_splash",
+    "lingering_potion":"bottle_lingering"
   }
 };
 
@@ -72,6 +108,78 @@ const blockMapping={
     "stone_slab2":"red_sandstone_slab"
   },
   "1.9":{
+    "log":"oak_log",
+    "planks":"oak_planks",
+    "sapling":"oak_sapling",
+    "leaves":"oak_leaves",
+    "tallgrass":"tall_grass",
+    "deadbush":"dead_bush",
+    "wool":"white_wool",
+    "piston_extension":"piston",
+    "yellow_flower":"dandelion",
+    "red_flower":"poppy",
+    "double_stone_slab":"stone_double_slab",
+    "stained_glass":"white_stained_glass",
+    "double_wooden_slab":"oak_double_slab",
+    "wooden_slab":"oak_slab",
+    "stained_hardened_clay":"white_stained_hardened_clay",
+    "stained_glass_pane":"white_stained_glass_pane",
+    "log2":"acacia_log",
+    "leaves2":"acacia_leaves",
+    "carpet":"white_carpet",
+    "double_plant":"sunflower",
+    "double_stone_slab2":"red_sandstone_double_slab",
+    "stone_slab2":"red_sandstone_slab"
+  },
+  "1.10":{
+    "log":"oak_log",
+    "planks":"oak_planks",
+    "sapling":"oak_sapling",
+    "leaves":"oak_leaves",
+    "tallgrass":"tall_grass",
+    "deadbush":"dead_bush",
+    "wool":"white_wool",
+    "piston_extension":"piston",
+    "yellow_flower":"dandelion",
+    "red_flower":"poppy",
+    "double_stone_slab":"stone_double_slab",
+    "stained_glass":"white_stained_glass",
+    "double_wooden_slab":"oak_double_slab",
+    "wooden_slab":"oak_slab",
+    "stained_hardened_clay":"white_stained_hardened_clay",
+    "stained_glass_pane":"white_stained_glass_pane",
+    "log2":"acacia_log",
+    "leaves2":"acacia_leaves",
+    "carpet":"white_carpet",
+    "double_plant":"sunflower",
+    "double_stone_slab2":"red_sandstone_double_slab",
+    "stone_slab2":"red_sandstone_slab"
+  },
+  "1.11.2":{
+    "log":"oak_log",
+    "planks":"oak_planks",
+    "sapling":"oak_sapling",
+    "leaves":"oak_leaves",
+    "tallgrass":"tall_grass",
+    "deadbush":"dead_bush",
+    "wool":"white_wool",
+    "piston_extension":"piston",
+    "yellow_flower":"dandelion",
+    "red_flower":"poppy",
+    "double_stone_slab":"stone_double_slab",
+    "stained_glass":"white_stained_glass",
+    "double_wooden_slab":"oak_double_slab",
+    "wooden_slab":"oak_slab",
+    "stained_hardened_clay":"white_stained_hardened_clay",
+    "stained_glass_pane":"white_stained_glass_pane",
+    "log2":"acacia_log",
+    "leaves2":"acacia_leaves",
+    "carpet":"white_carpet",
+    "double_plant":"sunflower",
+    "double_stone_slab2":"red_sandstone_double_slab",
+    "stone_slab2":"red_sandstone_slab"
+  },
+  "1.12":{
     "log":"oak_log",
     "planks":"oak_planks",
     "sapling":"oak_sapling",
@@ -126,7 +234,8 @@ function extractModel(name,path) {
   }
 }
 
-function getItems(unzippedFilesDir,itemsTexturesPath,itemMapping) {
+function getItems(unzippedFilesDir,itemsTexturesPath,itemMapping,version) {
+  const mcData = require("minecraft-data")(version);
   const itemTextures = mcData.itemsArray.map(item => {
     const model = itemMapping[item.name] ? itemMapping[item.name] : item.name;
     const texture = extractModel(model, unzippedFilesDir + "/assets/minecraft/models/item/");
@@ -139,7 +248,8 @@ function getItems(unzippedFilesDir,itemsTexturesPath,itemMapping) {
   fs.writeFileSync(itemsTexturesPath, JSON.stringify(itemTextures, null, 2));
 }
 
-function getBlocks(unzippedFilesDir,blocksTexturesPath,blockMapping) {
+function getBlocks(unzippedFilesDir,blocksTexturesPath,blockMapping,version) {
+  const mcData = require("minecraft-data")(version);
   const blockModel = mcData.blocksArray.map(block => {
     const blockState=blockMapping[block.name] ? blockMapping[block.name] : block.name;
     const model = extractBlockState(blockState, unzippedFilesDir + "/assets/minecraft/blockstates/");
@@ -176,8 +286,8 @@ function extract(minecraftVersion,outputDir,temporaryDir,cb) {
       return;
     }
     fs.mkdirpSync(outputDir);
-    getItems(unzippedFilesDir,outputDir+"/items_textures.json",itemMapping[minecraftVersion]);
-    getBlocks(unzippedFilesDir,outputDir+"/blocks_textures.json",blockMapping[minecraftVersion]);
+    getItems(unzippedFilesDir,outputDir+"/items_textures.json",itemMapping[minecraftVersion],minecraftVersion);
+    getBlocks(unzippedFilesDir,outputDir+"/blocks_textures.json",blockMapping[minecraftVersion],minecraftVersion);
     copyTextures(unzippedFilesDir,outputDir);
     generateTextureContent(outputDir);
     cb();
