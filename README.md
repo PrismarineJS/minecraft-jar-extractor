@@ -5,9 +5,15 @@ Extract structured data from the minecraft jar
 
 ## image name extractor
 
-Just run `node image_names.js <version1,version2,...> <output_dir> <temporary_dir>` and get a directory containing the name->texture mapping and the textures.
+Just run `node image_names.js <version1,version2,...> <output_dir> <temporary_dir>` 
+and get a directory containing the name->texture mapping and the textures.
 
 Result of that currently online at [minecraft-assets](https://github.com/rom1504/minecraft-assets)
+
+## lang extractor
+
+Just run `node lang.js <version1,version2,...> <output_dir> <temporary_dir>` 
+and get a directory containing en_us.lang and en_us.json
 
 ## protocol extractor
 
