@@ -225,12 +225,22 @@ function extractBlockState(name,path) {
 }
 
 function extractModel(name,path) {
-  if(name===null)
+  if(name===null) {
     return null;
+  }
   else {
     try {
       const t = JSON.parse(fs.readFileSync(path + name + ".json", "utf8"));
-      return !t.textures ? null : t.textures[Object.keys(t.textures)[0]];
+      if(t.textures) {
+        return t.textures[Object.keys(t.textures)[0]];
+      }
+      if(t.parent) {
+        if(t.parent.startsWith('builtin/')) {
+          return null;
+        }
+        return extractModel(t.parent, path);
+      }
+      return null;
     }
     catch(err) {
       console.log(err.stack);
@@ -243,7 +253,7 @@ function getItems(unzippedFilesDir,itemsTexturesPath,itemMapping,version) {
   const mcData = require("minecraft-data")(version);
   const itemTextures = mcData.itemsArray.map(item => {
     const model = itemMapping[item.name] ? itemMapping[item.name] : item.name;
-    const texture = extractModel(model, unzippedFilesDir + "/assets/minecraft/models/item/");
+    const texture = extractModel('item/' + model, unzippedFilesDir + "/assets/minecraft/models/");
     return {
       name: item.name,
       model: model === null ? null : model.replace('item/','items/'),
@@ -254,12 +264,11 @@ function getItems(unzippedFilesDir,itemsTexturesPath,itemMapping,version) {
 }
 
 function getBlocks(unzippedFilesDir,blocksTexturesPath,blockMapping,version) {
-  const inputBlockDir = version === '1.13' ? '' : 'block';
   const mcData = require("minecraft-data")(version);
   const blockModel = mcData.blocksArray.map(block => {
     const blockState=blockMapping[block.name] ? blockMapping[block.name] : block.name;
     const model = extractBlockState(blockState, unzippedFilesDir + "/assets/minecraft/blockstates/");
-    const texture = extractModel(model, unzippedFilesDir + "/assets/minecraft/models/" + inputBlockDir + '/');
+    const texture = extractModel(model === null ? null : (model.startsWith('block/') ? model : 'block/'+model), unzippedFilesDir + "/assets/minecraft/models/");
     return {
       name: block.name,
       blockState:blockState,
