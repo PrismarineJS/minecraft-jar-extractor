@@ -1,5 +1,6 @@
 # minecraft-jar-extractor
 [![NPM version](https://img.shields.io/npm/v/minecraft-jar-extractor.svg)](http://npmjs.com/package/minecraft-jar-extractor)
+[![Build Status](https://circleci.com/gh/PrismarineJS/minecraft-jar-extractor/tree/master.svg?style=shield)](https://circleci.com/gh/PrismarineJS/minecraft-jar-extractor/tree/master)
 
 Extract structured data from the minecraft jar
 
