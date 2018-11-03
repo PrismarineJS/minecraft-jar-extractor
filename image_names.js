@@ -246,8 +246,8 @@ function getItems(unzippedFilesDir,itemsTexturesPath,itemMapping,version) {
     const texture = extractModel(model, unzippedFilesDir + "/assets/minecraft/models/item/");
     return {
       name: item.name,
-      model: model,
-      texture: texture
+      model: model === null ? null : model.replace('item/','items/'),
+      texture: texture === null ? null : texture.replace('item/','items/')
     }
   });
   fs.writeFileSync(itemsTexturesPath, JSON.stringify(itemTextures, null, 2));
@@ -263,8 +263,8 @@ function getBlocks(unzippedFilesDir,blocksTexturesPath,blockMapping,version) {
     return {
       name: block.name,
       blockState:blockState,
-      model: model,
-      texture: texture
+      model: model === null ? null : model.replace('block/','blocks/'),
+      texture: texture === null ? null : texture.replace('block/','blocks/')
     }
   });
   fs.writeFileSync(blocksTexturesPath, JSON.stringify(blockModel, null, 2));
@@ -283,7 +283,7 @@ function generateTextureContent(outputDir) {
   const arr=blocksItems.map(b => ({
     name:b.name,
     texture:b.texture==null ? null :
-      ("data:image/png;base64,"+fs.readFileSync(outputDir+"/"+b.texture.replace('block/','blocks/').replace('item/','items/')+".png","base64"))
+      ("data:image/png;base64,"+fs.readFileSync(outputDir+"/"+b.texture.replace('item/','items/').replace('block/','blocks/')+".png","base64"))
   }));
   fs.writeFileSync(outputDir+"/texture_content.json",JSON.stringify(arr,null,2));
 }
