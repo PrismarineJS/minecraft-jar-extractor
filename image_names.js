@@ -78,6 +78,8 @@ const itemMapping={
     "totem_of_undying":"totem",
     "splash_potion":"bottle_splash",
     "lingering_potion":"bottle_lingering"
+  },
+  "1.13":{
   }
 };
 
@@ -202,6 +204,8 @@ const blockMapping={
     "double_plant":"sunflower",
     "double_stone_slab2":"red_sandstone_double_slab",
     "stone_slab2":"red_sandstone_slab"
+  },
+  "1.13":{
   }
 };
 
@@ -229,6 +233,7 @@ function extractModel(name,path) {
       return !t.textures ? null : t.textures[Object.keys(t.textures)[0]];
     }
     catch(err) {
+      console.log(err.stack);
       console.log(name);
     }
   }
@@ -249,11 +254,12 @@ function getItems(unzippedFilesDir,itemsTexturesPath,itemMapping,version) {
 }
 
 function getBlocks(unzippedFilesDir,blocksTexturesPath,blockMapping,version) {
+  const inputBlockDir = version === '1.13' ? '' : 'block';
   const mcData = require("minecraft-data")(version);
   const blockModel = mcData.blocksArray.map(block => {
     const blockState=blockMapping[block.name] ? blockMapping[block.name] : block.name;
     const model = extractBlockState(blockState, unzippedFilesDir + "/assets/minecraft/blockstates/");
-    const texture = extractModel(model, unzippedFilesDir + "/assets/minecraft/models/block/");
+    const texture = extractModel(model, unzippedFilesDir + "/assets/minecraft/models/" + inputBlockDir + '/');
     return {
       name: block.name,
       blockState:blockState,
@@ -264,9 +270,12 @@ function getBlocks(unzippedFilesDir,blocksTexturesPath,blockMapping,version) {
   fs.writeFileSync(blocksTexturesPath, JSON.stringify(blockModel, null, 2));
 }
 
-function copyTextures(unzippedFilesDir,outputDir) {
-  fs.copySync(unzippedFilesDir+'/assets/minecraft/textures/blocks', outputDir+"/blocks");
-  fs.copySync(unzippedFilesDir+'/assets/minecraft/textures/items', outputDir+"/items");
+function copyTextures(unzippedFilesDir,outputDir, minecraftVersion) {
+  const inputBlocksDir = minecraftVersion === '1.13' ? 'block' : 'blocks';
+  const inputItemsDir = minecraftVersion === '1.13' ? 'item' : 'items';
+
+  fs.copySync(unzippedFilesDir+'/assets/minecraft/textures/'+inputBlocksDir, outputDir+"/blocks");
+  fs.copySync(unzippedFilesDir+'/assets/minecraft/textures/'+inputItemsDir, outputDir+"/items");
 }
 
 function generateTextureContent(outputDir) {
@@ -274,7 +283,7 @@ function generateTextureContent(outputDir) {
   const arr=blocksItems.map(b => ({
     name:b.name,
     texture:b.texture==null ? null :
-      ("data:image/png;base64,"+fs.readFileSync(outputDir+"/"+b.texture+".png","base64"))
+      ("data:image/png;base64,"+fs.readFileSync(outputDir+"/"+b.texture.replace('block/','blocks/').replace('item/','items/')+".png","base64"))
   }));
   fs.writeFileSync(outputDir+"/texture_content.json",JSON.stringify(arr,null,2));
 }
@@ -288,7 +297,7 @@ function extract(minecraftVersion,outputDir,temporaryDir,cb) {
     fs.mkdirpSync(outputDir);
     getItems(unzippedFilesDir,outputDir+"/items_textures.json",itemMapping[minecraftVersion],minecraftVersion);
     getBlocks(unzippedFilesDir,outputDir+"/blocks_textures.json",blockMapping[minecraftVersion],minecraftVersion);
-    copyTextures(unzippedFilesDir,outputDir);
+    copyTextures(unzippedFilesDir,outputDir, minecraftVersion);
     generateTextureContent(outputDir);
     cb();
   });
