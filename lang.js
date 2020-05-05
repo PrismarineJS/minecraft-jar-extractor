@@ -27,11 +27,18 @@ function copyLang (unzippedFilesDir, outputDir) {
   try {
     fs.copySync(unzippedFilesDir + '/assets/minecraft/lang/en_US.lang', outputDir + '/en_us.lang')
   } catch (err) {
-    fs.copySync(unzippedFilesDir + '/assets/minecraft/lang/en_us.lang', outputDir + '/en_us.lang')
+    try {
+      fs.copySync(unzippedFilesDir + '/assets/minecraft/lang/en_us.lang', outputDir + '/en_us.lang')
+    } catch (err) {
+      fs.copySync(unzippedFilesDir + '/assets/minecraft/lang/en_us.json', outputDir + '/en_us.json')
+    }
   }
 }
 
 function parseLang (outputDir) {
+  if (fs.existsSync(outputDir + '/en_us.json')) {
+    return
+  }
   const lang = {}
   fs.readFileSync(outputDir + '/en_us.lang', 'utf8').split('\n').forEach(function (l) {
     const c = l.split(/=(.+)/)
