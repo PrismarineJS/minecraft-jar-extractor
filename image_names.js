@@ -247,7 +247,7 @@ function extractModel (name, path) {
 function getItems (unzippedFilesDir, itemsTexturesPath, itemMapping, version) {
   const mcData = require('minecraft-data')(version)
   const itemTextures = mcData.itemsArray.map(item => {
-    const model = itemMapping[item.name] ? itemMapping[item.name] : item.name
+    const model = itemMapping !== undefined && itemMapping[item.name] ? itemMapping[item.name] : item.name
     const texture = extractModel('item/' + model, unzippedFilesDir + '/assets/minecraft/models/')
     return {
       name: item.name,
@@ -261,7 +261,7 @@ function getItems (unzippedFilesDir, itemsTexturesPath, itemMapping, version) {
 function getBlocks (unzippedFilesDir, blocksTexturesPath, blockMapping, version) {
   const mcData = require('minecraft-data')(version)
   const blockModel = mcData.blocksArray.map(block => {
-    const blockState = blockMapping[block.name] ? blockMapping[block.name] : block.name
+    const blockState = blockMapping !== undefined && blockMapping[block.name] ? blockMapping[block.name] : block.name
     const model = extractBlockState(blockState, unzippedFilesDir + '/assets/minecraft/blockstates/')
     const texture = extractModel(model === null ? null : (model.startsWith('block/') ? model : 'block/' + model), unzippedFilesDir + '/assets/minecraft/models/')
     return {
@@ -275,8 +275,9 @@ function getBlocks (unzippedFilesDir, blocksTexturesPath, blockMapping, version)
 }
 
 function copyTextures (unzippedFilesDir, outputDir, minecraftVersion) {
-  const inputBlocksDir = minecraftVersion === '1.13' ? 'block' : 'blocks'
-  const inputItemsDir = minecraftVersion === '1.13' ? 'item' : 'items'
+  const recentVersion = minecraftVersion.startsWith('1.13') || minecraftVersion.startsWith('1.14') || minecraftVersion.startsWith('1.15')
+  const inputBlocksDir = recentVersion ? 'block' : 'blocks'
+  const inputItemsDir = recentVersion ? 'item' : 'items'
 
   fs.copySync(unzippedFilesDir + '/assets/minecraft/textures/' + inputBlocksDir, outputDir + '/blocks')
   fs.copySync(unzippedFilesDir + '/assets/minecraft/textures/' + inputItemsDir, outputDir + '/items')
