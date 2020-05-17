@@ -54,11 +54,11 @@ function linesToProtocol (cleanLines, cb) {
       currentToServerId = 0
       protocol[currentState] = {}
     } else if (results = line.match(/this\.a\(fg\.([ab]), ([a-z.]+)\.class\);/)) { // eslint-disable-line no-cond-assign
-      let direction = results[1] === 'b' ? 'toClient' : 'toServer'
-      let theClass = results[2]
-      let id = idToHexString(direction === 'toClient' ? currentToClientId : currentToServerId)
+      const direction = results[1] === 'b' ? 'toClient' : 'toServer'
+      const theClass = results[2]
+      const id = idToHexString(direction === 'toClient' ? currentToClientId : currentToServerId)
       if (protocol[currentState][direction] === undefined) { protocol[currentState][direction] = {} }
-      protocol[currentState][direction][theClass] = { 'id': id, 'fields': getFields(theClass) }
+      protocol[currentState][direction][theClass] = { id: id, fields: getFields(theClass) }
       if (direction === 'toClient') currentToClientId++
       else currentToServerId++
     }
@@ -80,9 +80,9 @@ function idToHexString (id) {
 }
 
 const states = {
-  '0': 'play',
-  '1': 'status',
-  '2': 'login',
+  0: 'play',
+  1: 'status',
+  2: 'login',
   '-1': 'handshaking'
 }
 
