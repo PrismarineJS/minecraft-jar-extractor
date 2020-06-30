@@ -13,7 +13,7 @@
     "url": "git+https://github.com/PrismarineJS/minecraft-jar-extractor.git"
   },
   "dependencies": {
-    "async": "~0.9.0",
+    "async": "~2.6.3",
     "es6-promisify": "^6.1.1",
     "extract-zip": "^2.0.1",
     "fernflower": "^1.1.0",
