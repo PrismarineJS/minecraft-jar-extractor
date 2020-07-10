@@ -209,11 +209,12 @@ const blockMapping = {
   }
 }
 
-function extractBlockState (name, path) {
+function extractBlockState (name, path, full = false) {
   if (name === null) { return null } else {
     try {
       name = name.replace(/minecraft:/,'')
       const t = JSON.parse(fs.readFileSync(path + name + '.json', 'utf8'))
+      if (full) return t
       const firstVariant = t.variants[Object.keys(t.variants)[0]]
       return firstVariant.model || firstVariant[0].model
     } catch (err) {
@@ -222,13 +223,14 @@ function extractBlockState (name, path) {
   }
 }
 
-function extractModel (name, path) {
+function extractModel (name, path, full = false) {
   if (name === null) {
     return null
   } else {
     try {
       name = name.replace(/^(?:block\/)?minecraft:/,'')
       const t = JSON.parse(fs.readFileSync(path + name + '.json', 'utf8'))
+      if (full) return t
       if (t.textures) {
         return t.textures[Object.keys(t.textures)[0]]
       }
@@ -253,8 +255,8 @@ function getItems (unzippedFilesDir, itemsTexturesPath, itemMapping, version) {
     const texture = extractModel('item/' + model, unzippedFilesDir + '/assets/minecraft/models/')
     return {
       name: item.name,
-      model: model === null ? null : model.replace('item/', 'items/'),
-      texture: texture === null ? null : texture.replace('item/', 'items/')
+      model: !model ? null : model.replace('item/', 'items/'),
+      texture: !texture ? null : texture.replace('item/', 'items/')
     }
   })
   fs.writeFileSync(itemsTexturesPath, JSON.stringify(itemTextures, null, 2))
@@ -265,15 +267,34 @@ function getBlocks (unzippedFilesDir, blocksTexturesPath, blockMapping, version)
   const blockModel = mcData.blocksArray.map(block => {
     const blockState = (blockMapping !== undefined && blockMapping[block.name] ? blockMapping[block.name] : block.name).replace(/minecraft:/,'')
     const model = extractBlockState(blockState, unzippedFilesDir + '/assets/minecraft/blockstates/')
-    const texture = extractModel(model === null ? null : (model.startsWith('block/') ? model : 'block/' + model), unzippedFilesDir + '/assets/minecraft/models/')
+    const texture = extractModel(!model ? null : (model.startsWith('block/') ? model : 'block/' + model), unzippedFilesDir + '/assets/minecraft/models/')
     return {
       name: block.name,
       blockState: blockState,
-      model: model === null ? null : model.replace('block/', 'blocks/'),
-      texture: texture === null ? null : texture.replace('block/', 'blocks/')
+      model: !model ? null : model.replace('block/', 'blocks/'),
+      texture: !texture ? null : texture.replace('block/', 'blocks/')
     }
   })
   fs.writeFileSync(blocksTexturesPath, JSON.stringify(blockModel, null, 2))
+}
+
+function getModels (unzippedFilesDir, blocksStatesPath, blocksModelsPath, blockMapping, version) {
+  const mcData = require('minecraft-data')(version)
+  const blocksStates = {}
+  for (const block of mcData.blocksArray) {
+    const blockState = blockMapping !== undefined && blockMapping[block.name] ? blockMapping[block.name] : block.name
+    const state = extractBlockState(blockState, unzippedFilesDir + '/assets/minecraft/blockstates/', true)
+    blocksStates[block.name] = state
+  }
+  const modelsPath = unzippedFilesDir + '/assets/minecraft/models/block/'
+  const modelFiles = fs.readdirSync(modelsPath)
+  const models = {}
+  for (const name of modelFiles) {
+    const model = require(modelsPath + name)
+    models[name.split('.')[0]] = model
+  }
+  fs.writeFileSync(blocksStatesPath, JSON.stringify(blocksStates, null, 2))
+  fs.writeFileSync(blocksModelsPath, JSON.stringify(models, null, 2))
 }
 
 function copyTextures (unzippedFilesDir, outputDir, minecraftVersion) {
@@ -304,6 +325,7 @@ function extract (minecraftVersion, outputDir, temporaryDir, cb) {
     fs.mkdirpSync(outputDir)
     getItems(unzippedFilesDir, outputDir + '/items_textures.json', itemMapping[minecraftVersion], minecraftVersion)
     getBlocks(unzippedFilesDir, outputDir + '/blocks_textures.json', blockMapping[minecraftVersion], minecraftVersion)
+    getModels(unzippedFilesDir, outputDir + '/blocks_states.json', outputDir + '/blocks_models.json', blockMapping[minecraftVersion], minecraftVersion)
     copyTextures(unzippedFilesDir, outputDir, minecraftVersion)
     generateTextureContent(outputDir)
     cb()
