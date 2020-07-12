@@ -6,18 +6,17 @@ function getMinecraftFiles (minecraftVersion, temporaryDir, cb) {
   const jarPath = temporaryDir + '/' + minecraftVersion + '.jar'
   const unzippedFilesDir = temporaryDir + '/' + minecraftVersion
   fs.mkdirpSync(unzippedFilesDir)
-  downloadClient(minecraftVersion, jarPath, function (err) {
+  downloadClient(minecraftVersion, jarPath, async (err) => {
     if (err) {
       cb(err)
       return
     }
-    extract(jarPath, { dir: unzippedFilesDir }, function (err) {
-      if (err) {
-        cb(err)
-        return
-      }
+    try {
+      await extract(jarPath, { dir: unzippedFilesDir })
       cb(null, unzippedFilesDir)
-    })
+    } catch (err) {
+      cb(err)
+    }
   })
 }
 
