@@ -212,7 +212,7 @@ const blockMapping = {
 function extractBlockState (name, path, full = false) {
   if (name === null) { return null } else {
     try {
-      name = name.replace(/minecraft:/,'')
+      name = name.replace(/minecraft:/, '')
       const t = JSON.parse(fs.readFileSync(path + name + '.json', 'utf8'))
       if (full) return t
       const firstVariant = t.variants[Object.keys(t.variants)[0]]
@@ -228,7 +228,7 @@ function extractModel (name, path, full = false) {
     return null
   } else {
     try {
-      name = name.replace(/^(?:block\/)?minecraft:/,'')
+      name = name.replace(/^(?:block\/)?minecraft:/, '')
       const t = JSON.parse(fs.readFileSync(path + name + '.json', 'utf8'))
       if (full) return t
       if (t.textures) {
@@ -251,7 +251,7 @@ function extractModel (name, path, full = false) {
 function getItems (unzippedFilesDir, itemsTexturesPath, itemMapping, version) {
   const mcData = require('minecraft-data')(version)
   const itemTextures = mcData.itemsArray.map(item => {
-    const model = (itemMapping !== undefined && itemMapping[item.name] ? itemMapping[item.name] : item.name).replace(/minecraft:/,'')
+    const model = (itemMapping !== undefined && itemMapping[item.name] ? itemMapping[item.name] : item.name).replace(/minecraft:/, '')
     const texture = extractModel('item/' + model, unzippedFilesDir + '/assets/minecraft/models/')
     return {
       name: item.name,
@@ -265,7 +265,7 @@ function getItems (unzippedFilesDir, itemsTexturesPath, itemMapping, version) {
 function getBlocks (unzippedFilesDir, blocksTexturesPath, blockMapping, version) {
   const mcData = require('minecraft-data')(version)
   const blockModel = mcData.blocksArray.map(block => {
-    const blockState = (blockMapping !== undefined && blockMapping[block.name] ? blockMapping[block.name] : block.name).replace(/minecraft:/,'')
+    const blockState = (blockMapping !== undefined && blockMapping[block.name] ? blockMapping[block.name] : block.name).replace(/minecraft:/, '')
     const model = extractBlockState(blockState, unzippedFilesDir + '/assets/minecraft/blockstates/')
     const texture = extractModel(!model ? null : (model.startsWith('block/') ? model : 'block/' + model), unzippedFilesDir + '/assets/minecraft/models/')
     return {
@@ -311,7 +311,7 @@ function generateTextureContent (outputDir) {
   const arr = blocksItems.map(b => ({
     name: b.name,
     texture: b.texture == null ? null
-      : ('data:image/png;base64,' + fs.readFileSync(outputDir + '/' + b.texture.replace('item/', 'items/').replace('block/', 'blocks/').replace(/minecraft:/,'') + '.png', 'base64'))
+      : ('data:image/png;base64,' + fs.readFileSync(outputDir + '/' + b.texture.replace('item/', 'items/').replace('block/', 'blocks/').replace(/minecraft:/, '') + '.png', 'base64'))
   }))
   fs.writeFileSync(outputDir + '/texture_content.json', JSON.stringify(arr, null, 2))
 }
