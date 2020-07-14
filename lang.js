@@ -12,20 +12,21 @@ const os = process.platform
 
 const ld = new LauncherDownload(dir, os)
 
-if (!fs.existsSync(path.join(__dirname, version))){
-  fs.mkdirSync(path.join(__dirname, version), (err)=>{});
+if (!fs.existsSync(path.join(__dirname, version))) {
+  fs.mkdirSync(path.join(__dirname, version), (err) => { console.error(err) })
 }
 
 ld.getAssetIndex(version).then(assets => {
-  Object.keys(assets['objects']).forEach(asset => {
-    if(/^(minecraft\/lang\/)/.test(asset)) {
+  Object.keys(assets.objects).forEach(asset => {
+    if (/^(minecraft\/lang\/)/.test(asset)) {
       ld.getAsset(asset, version).then(r => {
-        fs.readFile(r, {encoding: 'utf8'}, (err, data) => {
-          fs.writeFileSync(path.join(__dirname, version+'/'+asset.split('/')[2]), data)
+        fs.readFile(r, { encoding: 'utf8' }, (err, data) => {
+          if (err) console.error(err)
+          fs.writeFileSync(path.join(__dirname, version + '/' + asset.split('/')[2]), data)
         })
       })
     }
-  });
+  })
 }).catch(err => {
   console.log(err)
 })
