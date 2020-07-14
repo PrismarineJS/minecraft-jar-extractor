@@ -1,7 +1,6 @@
 const LauncherDownload = require('minecraft-wrap').LauncherDownload
 const path = require('path')
 const fs = require('fs')
-const { version } = require('punycode')
 if (!(process.argv.length >= 5 && process.argv.length <= 6)) {
   console.log('Usage : node lang.js <version1,version2,...> <lang1,lang2,...>|* <output_dir>')
   process.exit(0)
@@ -19,29 +18,27 @@ if (!fs.existsSync(path.join(__dirname, dirToSave))) {
   fs.mkdirSync(path.join(__dirname, dirToSave), (err) => { console.error(err) })
 }
 let langi = 0
-let assets1 = []
 versions.forEach(version => {
+  const assetsCurrent = []
   ld.getAssetIndex(version).then(assets => {
     Object.keys(assets.objects).forEach(asset => {
       if (/^(minecraft\/lang\/)/.test(asset)) {
         if (langs !== '*') {
           if (langs[langi] === asset.split('/')[2].split('.')[0]) {
-            assets1.push(asset); langi++
+            assetsCurrent.push(asset); langi++
           }
-        } else assets1.push(asset)
+        } else assetsCurrent.push(asset)
       }
     })
-  
-    downloadLangs(version)
+
+    downloadLangs(version, assetsCurrent)
   }).catch(err => {
     console.log(err)
   })
-
-  setTimeout(()=>{}, 500)
 })
 
-const downloadLangs = (version) => {
-  assets1.forEach(asset => {
+const downloadLangs = (version, assets) => {
+  assets.forEach(asset => {
     ld.getAsset(asset, version).then(r => {
       fs.readFile(r, { encoding: 'utf8' }, (err, data) => {
         if (err) console.error(err)
