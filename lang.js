@@ -30,7 +30,6 @@ versions.forEach(version => {
         } else assetsCurrent.push(asset)
       }
     })
-
     downloadLangs(version, assetsCurrent)
   }).catch(err => {
     console.log(err)
