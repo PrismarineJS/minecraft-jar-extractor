@@ -18,7 +18,10 @@ function extractDropIds (itemData, lootTable) {
       const info = object[prop]
       if (typeof info === 'string') {
         const block = getItemId(itemData, info)
-        if (block !== undefined) dropIds.push(block)
+        if (block !== undefined && dropIds.indexOf(block) === -1) {
+          dropIds.push(block)
+        }
+
         continue
       }
 
