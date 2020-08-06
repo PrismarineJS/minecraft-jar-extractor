@@ -3,25 +3,25 @@
 const fs = require('fs')
 const path = require('path')
 
-function getBlockId (data, name) {
+function getItemId (data, name) {
   for (const prop in data) {
-    const block = data[prop]
-    if (`minecraft:${block.name}` === name) return block.id
+    const item = data[prop]
+    if (`minecraft:${item.name}` === name) return item.id
   }
 }
 
-function extractDropIds (data, lootTable) {
-  const blockIds = []
-
-  // TODO Parse lootTable to provide accurate drop data.
-  // if (!lootTable.pools || lootTable.pools.length === 0) return blockIds
+function extractDropIds (itemData, lootTable) {
+  const dropIds = []
 
   function recursiveDropSearch (object) {
     for (const prop in object) {
       const info = object[prop]
       if (typeof info === 'string') {
-        const block = getBlockId(data, info)
-        if (block !== undefined) blockIds.push(block)
+        const block = getItemId(itemData, info)
+        if (block !== undefined && dropIds.indexOf(block) === -1) {
+          dropIds.push(block)
+        }
+
         continue
       }
 
@@ -31,22 +31,28 @@ function extractDropIds (data, lootTable) {
 
   recursiveDropSearch(lootTable)
 
-  return blockIds
+  return dropIds
 }
 
 function handle (dataFolder, mcDataFolder, version) {
   dataFolder += '/' + version
 
   const raw = path.resolve(dataFolder + '/data/loot_tables/blocks')
-  const target = path.resolve(
+
+  const blockDataPath = path.resolve(
     mcDataFolder + '/data/pc/' + version + '/blocks.json'
   )
 
-  const data = require(target)
+  const itemDataPath = path.resolve(
+    mcDataFolder + '/data/pc/' + version + '/items.json'
+  )
+
+  const blockData = require(blockDataPath)
+  const itemData = require(itemDataPath)
 
   let fileCount = 0
-  for (const prop in data) {
-    const block = data[prop]
+  for (const prop in blockData) {
+    const block = blockData[prop]
 
     const inputPath = path.join(raw, block.name + '.json')
     if (!fs.existsSync(inputPath)) {
@@ -57,14 +63,14 @@ function handle (dataFolder, mcDataFolder, version) {
     fileCount++
 
     const lootTable = require(inputPath)
-    block.drops = extractDropIds(data, lootTable)
+    block.drops = extractDropIds(itemData, lootTable)
   }
 
-  fs.writeFileSync(target, JSON.stringify(data, null, 2))
+  fs.writeFileSync(blockDataPath, JSON.stringify(blockData, null, 2))
   console.log(`Version ${version} finished. (${fileCount} files processed)`)
 }
 
-if (process.argv.length !== 4) {
+if (process.argv.length !== 5) {
   console.log(
     'Usage: node extract_block_lootTables.js <version1,version2,...> <extractedDataFolder> <mcDataFolder>'
   )
