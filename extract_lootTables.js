@@ -4,26 +4,24 @@ const fs = require('fs')
 const path = require('path')
 const getPotentialDrops = require('prismarine-loottable').getPotentialDrops
 
-function getId (data, name) {
+function removeNamespace(name) {
   if (name.startsWith('minecraft:'))
     name = name.substring(10)
 
-  for (const obj of data) {
-    if (obj.name === name) return obj.id
-  }
+  return name
 }
 
-function extractBlockTable (itemData, blockData, lootData, lootTable, name) {
+function extractBlockTable (lootData, lootTable, name) {
   const obj = {}
-  obj.block = getId(blockData, name)
-  extractTable(itemData, obj, lootTable)
+  obj.block = removeNamespace(name)
+  extractTable(obj, lootTable)
   lootData.push(obj)
 }
 
-function extractEntityTable (itemData, entityData, lootData, lootTable, name) {
+function extractEntityTable (lootData, lootTable, name) {
   const obj = {}
-  obj.entity = getId(entityData, name)
-  extractTable(itemData, obj, lootTable)
+  obj.entity = removeNamespace(name)
+  extractTable(obj, lootTable)
   lootData.push(obj)
 }
 
@@ -43,7 +41,7 @@ function requiresPlayerKill (drop) {
   return false
 }
 
-function extractTable (itemData, obj, lootTable) {
+function extractTable (obj, lootTable) {
   const drops = getPotentialDrops(lootTable)
 
   obj.drops = []
@@ -51,7 +49,7 @@ function extractTable (itemData, obj, lootTable) {
     const dropInfo = {}
     obj.drops.push(dropInfo)
 
-    dropInfo.id = getId(itemData, drop.itemType)
+    dropInfo.item = removeNamespace(drop.itemType)
     dropInfo.dropChance = drop.dropChance
 
     if (obj.block !== undefined) {
@@ -67,14 +65,8 @@ function handle (dataFolder, mcDataFolder, version) {
 
   const raw = path.resolve(dataFolder + '/data/loot_tables')
 
-  const blockDataPath = path.resolve(mcDataFolder + '/data/pc/' + version + '/blocks.json')
-  const entityDataPath = path.resolve(mcDataFolder + '/data/pc/' + version + '/entities.json')
-  const itemDataPath = path.resolve(mcDataFolder + '/data/pc/' + version + '/items.json')
   const lootDataPath = path.resolve(mcDataFolder + '/data/pc/' + version + '/loot.json')
 
-  const entityData = require(entityDataPath)
-  const blockData = require(blockDataPath)
-  const itemData = require(itemDataPath)
   const lootData = []
 
   const blockLootFiles = fs.readdirSync(path.join(raw, 'blocks'))
@@ -85,7 +77,7 @@ function handle (dataFolder, mcDataFolder, version) {
     if (fs.statSync(fullPath).isDirectory()) continue
 
     const name = blockLoot.substring(0, blockLoot.length - 5)
-    extractBlockTable(itemData, blockData, lootData, require(fullPath), name)
+    extractBlockTable(lootData, require(fullPath), name)
   }
 
   for (const entityLoot of entityLootFiles) {
@@ -93,7 +85,7 @@ function handle (dataFolder, mcDataFolder, version) {
     if (fs.statSync(fullPath).isDirectory()) continue
 
     const name = entityLoot.substring(0, entityLoot.length - 5)
-    extractEntityTable(itemData, entityData, lootData, require(fullPath), name)
+    extractEntityTable(lootData, require(fullPath), name)
   }
 
   fs.writeFileSync(lootDataPath, JSON.stringify(lootData, null, 2))
