@@ -60,36 +60,33 @@ function extractTable (obj, lootTable) {
   }
 }
 
+function generate(inputDir, outputFile, handlerFunction) {
+  const lootData = []
+
+  const lootFiles = fs.readdirSync(inputDir)
+  for (const loot of lootFiles) {
+    const fullPath = path.join(inputDir, loot)
+    if (fs.statSync(fullPath).isDirectory()) continue
+
+    const name = loot.substring(0, loot.length - 5)
+    handlerFunction(lootData, require(fullPath), name)
+  }
+
+  fs.writeFileSync(outputFile, JSON.stringify(lootData, null, 2))
+  return lootFiles.length
+}
+
 function handle (dataFolder, mcDataFolder, version) {
   dataFolder += '/' + version
 
   const raw = path.resolve(dataFolder + '/data/loot_tables')
+  const dataPath = path.resolve(mcDataFolder + '/data/pc/' + version)
 
-  const lootDataPath = path.resolve(mcDataFolder + '/data/pc/' + version + '/loot.json')
+  let entryCount = 0
+  entryCount += generate(path.join(raw, 'blocks'), path.join(dataPath, 'blockLoot.json'), extractBlockTable)
+  entryCount += generate(path.join(raw, 'entities'), path.join(dataPath, 'entityLoot.json'), extractEntityTable)
 
-  const lootData = []
-
-  const blockLootFiles = fs.readdirSync(path.join(raw, 'blocks'))
-  const entityLootFiles = fs.readdirSync(path.join(raw, 'entities'))
-
-  for (const blockLoot of blockLootFiles) {
-    const fullPath = path.join(raw, 'blocks', blockLoot)
-    if (fs.statSync(fullPath).isDirectory()) continue
-
-    const name = blockLoot.substring(0, blockLoot.length - 5)
-    extractBlockTable(lootData, require(fullPath), name)
-  }
-
-  for (const entityLoot of entityLootFiles) {
-    const fullPath = path.join(raw, 'entities', entityLoot)
-    if (fs.statSync(fullPath).isDirectory()) continue
-
-    const name = entityLoot.substring(0, entityLoot.length - 5)
-    extractEntityTable(lootData, require(fullPath), name)
-  }
-
-  fs.writeFileSync(lootDataPath, JSON.stringify(lootData, null, 2))
-  console.log(`Version ${version} finished. (${blockLootFiles.length + entityLootFiles.length} files processed)`)
+  console.log(`Version ${version} finished. (${entryCount} entries processed)`)
 }
 
 if (process.argv.length !== 5) {
