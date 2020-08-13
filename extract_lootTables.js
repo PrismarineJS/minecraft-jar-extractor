@@ -4,10 +4,8 @@ const fs = require('fs')
 const path = require('path')
 const getPotentialDrops = require('prismarine-loottable').getPotentialDrops
 
-function removeNamespace(name) {
-  if (name.startsWith('minecraft:'))
-    name = name.substring(10)
-
+function removeNamespace (name) {
+  if (name.startsWith('minecraft:')) name = name.substring(10)
   return name
 }
 
@@ -45,7 +43,7 @@ function extractTable (obj, lootTable) {
   }
 }
 
-function generate(inputDir, outputFile, handlerFunction) {
+function generate (inputDir, outputFile, handlerFunction) {
   const lootData = []
 
   const lootFiles = fs.readdirSync(inputDir)
