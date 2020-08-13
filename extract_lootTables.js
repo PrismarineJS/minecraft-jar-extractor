@@ -34,7 +34,7 @@ function extractTable (obj, lootTable) {
     obj.drops.push(dropInfo)
 
     dropInfo.item = removeNamespace(drop.itemType)
-    dropInfo.dropChance = drop.dropChance
+    dropInfo.dropChance = drop.estimateDropChance()
 
     if (obj.block !== undefined) {
       dropInfo.silkTouch = drop.requiresSilkTouch()
