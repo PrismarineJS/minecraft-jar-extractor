@@ -25,22 +25,6 @@ function extractEntityTable (lootData, lootTable, name) {
   lootData.push(obj)
 }
 
-function requiresSilkTouch (drop) {
-  for (const condition of drop.conditions) {
-    if (condition.isSilkTouch()) return true
-  }
-
-  return false
-}
-
-function requiresPlayerKill (drop) {
-  for (const condition of drop.conditions) {
-    if (condition.type === 'minecraft:killed_by_player') return true
-  }
-
-  return false
-}
-
 function extractTable (obj, lootTable) {
   const drops = getPotentialDrops(lootTable)
 
@@ -53,9 +37,9 @@ function extractTable (obj, lootTable) {
     dropInfo.dropChance = drop.dropChance
 
     if (obj.block !== undefined) {
-      dropInfo.silkTouch = requiresSilkTouch(drop)
+      dropInfo.silkTouch = drop.requiresSilkTouch()
     } else {
-      dropInfo.playerKill = requiresPlayerKill(drop)
+      dropInfo.playerKill = drop.requiresPlayerKill()
     }
   }
 }
