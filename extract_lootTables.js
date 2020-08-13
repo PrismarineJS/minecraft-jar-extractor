@@ -38,6 +38,7 @@ function extractTable (obj, lootTable) {
 
     if (obj.block !== undefined) {
       dropInfo.silkTouch = drop.requiresSilkTouch()
+      dropInfo.noSilkTouch = drop.requiresNoSilkTouch()
     } else {
       dropInfo.playerKill = drop.requiresPlayerKill()
     }
