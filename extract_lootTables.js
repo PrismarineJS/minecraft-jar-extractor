@@ -24,12 +24,12 @@ function extractEntityTable (lootData, lootTable, name) {
   lootData.push(obj)
 }
 
-function shrinkRange(range) {
+function shrinkRange (range) {
   if (range[0] === range[1]) return range[0]
   else return range
 }
 
-function removeDuplicates(list) {
+function removeDuplicates (list) {
   for (let i = 0; i < list.length; i++) {
     for (let j = i + 1; j < list.length; j++) {
       if (deepEqual(list[i], list[j])) {
