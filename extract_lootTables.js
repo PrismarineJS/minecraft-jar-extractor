@@ -3,6 +3,7 @@
 const fs = require('fs')
 const path = require('path')
 const getPotentialDrops = require('prismarine-loottable').getPotentialDrops
+const deepEqual = require('deep-equal')
 
 function removeNamespace (name) {
   if (name.startsWith('minecraft:')) name = name.substring(10)
@@ -28,6 +29,18 @@ function shrinkRange(range) {
   else return range
 }
 
+function removeDuplicates(list) {
+  for (let i = 0; i < list.length; i++) {
+    for (let j = i + 1; j < list.length; j++) {
+      if (deepEqual(list[i], list[j])) {
+        list.splice(j, 1)
+        removeDuplicates(list)
+        return
+      }
+    }
+  }
+}
+
 function extractTable (obj, lootTable) {
   const drops = getPotentialDrops(lootTable)
 
@@ -48,6 +61,8 @@ function extractTable (obj, lootTable) {
       dropInfo.playerKill = drop.requiresPlayerKill() || undefined
     }
   }
+
+  removeDuplicates(obj.drops)
 }
 
 function generate (inputDir, outputFile, handlerFunction) {
