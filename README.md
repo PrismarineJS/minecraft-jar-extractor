@@ -32,16 +32,13 @@ How to use it:
 
 ## block loot table extractor
 
-Only works in 1.13+ as the loot table files did not exist before this.
+Only works in 1.14+ as the loot table files did not exist before this.
 
 Make sure to first extract the data folder from Minecraft jar if not done already using:
 `node extract_datafolder.js <version1,version2,...> <output_dir> <temporary_dir>`
 
 Next you can extract the actual loot table data to Minecraft-Data using:
 `node extract_lootTables.js <version1,version2,...> <extractedDataFolder> <mcDataFolder>`
-
-This should automatically replace all block drops in MC-Data with all possible drops that could occur from that block.
-Does not currently support conditionals. (I.e. blocks only dropped with SilkTouch are still added.)
 
 ## History
 
