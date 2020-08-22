@@ -21,7 +21,7 @@
     "minecraft-data": "^2.34.0",
     "minecraft-wrap": "^1.2.3",
     "mkdirp": "^0.5.1",
-    "prismarine-loottable": "git+https://github.com/PrismarineJS/prismarine-loottable.git",
+    "prismarine-loottable": "git+https://github.com/TheDudeFromCI/prismarine-loottable.git#dropCount",
     "request": "^2.88.2",
     "standard": "^14.3.4"
   },
