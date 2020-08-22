@@ -23,6 +23,11 @@ function extractEntityTable (lootData, lootTable, name) {
   lootData.push(obj)
 }
 
+function shrinkRange(range) {
+  if (range[0] === range[1]) return range[0]
+  else return range
+}
+
 function extractTable (obj, lootTable) {
   const drops = getPotentialDrops(lootTable)
 
@@ -33,12 +38,14 @@ function extractTable (obj, lootTable) {
 
     dropInfo.item = removeNamespace(drop.itemType)
     dropInfo.dropChance = drop.estimateDropChance()
+    dropInfo.stackSize = shrinkRange(drop.getStackSizeRange())
 
     if (obj.block !== undefined) {
-      dropInfo.silkTouch = drop.requiresSilkTouch()
-      dropInfo.noSilkTouch = drop.requiresNoSilkTouch()
+      dropInfo.silkTouch = drop.requiresSilkTouch() || undefined
+      dropInfo.noSilkTouch = drop.requiresNoSilkTouch() || undefined
+      dropInfo.blockAge = drop.getRequiredBlockAge() || undefined
     } else {
-      dropInfo.playerKill = drop.requiresPlayerKill()
+      dropInfo.playerKill = drop.requiresPlayerKill() || undefined
     }
   }
 }
