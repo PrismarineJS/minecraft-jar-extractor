@@ -24,11 +24,6 @@ function extractEntityTable (lootData, lootTable, name) {
   lootData.push(obj)
 }
 
-function shrinkRange (range) {
-  if (range[0] === range[1]) return range[0]
-  else return range
-}
-
 function removeDuplicates (list) {
   for (let i = 0; i < list.length; i++) {
     for (let j = i + 1; j < list.length; j++) {
@@ -51,7 +46,7 @@ function extractTable (obj, lootTable) {
 
     dropInfo.item = removeNamespace(drop.itemType)
     dropInfo.dropChance = drop.estimateDropChance()
-    dropInfo.stackSize = shrinkRange(drop.getStackSizeRange())
+    dropInfo.stackSizeRange = drop.getStackSizeRange()
 
     if (obj.block !== undefined) {
       dropInfo.silkTouch = drop.requiresSilkTouch() || undefined
