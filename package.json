@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "async": "~2.6.3",
+    "deep-equal": "^2.0.3",
     "es6-promisify": "^6.1.1",
     "extract-zip": "^2.0.1",
     "fernflower": "^1.1.0",
@@ -21,6 +22,7 @@
     "minecraft-data": "^2.34.0",
     "minecraft-wrap": "^1.2.3",
     "mkdirp": "^0.5.1",
+    "prismarine-loottable": "^1.0.0",
     "request": "^2.88.2",
     "standard": "^14.3.4"
   },
