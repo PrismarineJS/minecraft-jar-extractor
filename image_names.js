@@ -13,16 +13,6 @@ const minecraftVersions = process.argv[2].split(',')
 const outputDir = path.resolve(process.argv[3])
 const temporaryDir = path.resolve(process.argv[4])
 
-minecraftVersions.forEach(minecraftVersion => {
-  extract(minecraftVersion, outputDir + '/' + minecraftVersion, temporaryDir, function (err) {
-    if (err) {
-      console.log(err.stack)
-      return
-    }
-    console.log('done ' + minecraftVersion + '!')
-  })
-})
-
 // doesn't support 1.7.10 : completely different organization (no block state, no model)
 const itemMapping = {
   '1.8.8': {
@@ -82,6 +72,7 @@ const itemMapping = {
   1.13: {
   }
 }
+
 
 // TODO: read the decompiled code (automatically) to generate this
 const blockMapping = {
@@ -208,6 +199,16 @@ const blockMapping = {
   1.13: {
   }
 }
+
+minecraftVersions.forEach(minecraftVersion => {
+  extract(minecraftVersion, outputDir + '/' + minecraftVersion, temporaryDir, function (err) {
+    if (err) {
+      console.log(err.stack)
+      return
+    }
+    console.log('done ' + minecraftVersion + '!')
+  })
+})
 
 function extractBlockState (name, path, full = false) {
   if (name === null) { return null } else {
