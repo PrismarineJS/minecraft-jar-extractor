@@ -24,7 +24,7 @@
     "mkdirp": "^0.5.1",
     "prismarine-loottable": "^1.0.0",
     "request": "^2.88.2",
-    "standard": "^14.3.4"
+    "standard": "^15.0.0"
   },
   "keywords": [
     "minecraft",
