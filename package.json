@@ -23,8 +23,7 @@
     "minecraft-wrap": "^1.2.3",
     "mkdirp": "^0.5.1",
     "prismarine-loottable": "^1.0.0",
-    "request": "^2.88.2",
-    "standard": "^14.3.4"
+    "request": "^2.88.2"
   },
   "keywords": [
     "minecraft",
@@ -36,5 +35,8 @@
   "bugs": {
     "url": "https://github.com/PrismarineJS/minecraft-jar-extractor/issues"
   },
-  "homepage": "https://github.com/PrismarineJS/minecraft-jar-extractor#readme"
+  "homepage": "https://github.com/PrismarineJS/minecraft-jar-extractor#readme",
+  "devDependencies": {
+    "standard": "^15.0.0"
+  }
 }
