@@ -37,6 +37,6 @@
   },
   "homepage": "https://github.com/PrismarineJS/minecraft-jar-extractor#readme",
   "devDependencies": {
-    "standard": "^15.0.0"
+    "standard": "^16.0.1"
   }
 }
