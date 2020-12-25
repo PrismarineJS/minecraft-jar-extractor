@@ -311,7 +311,8 @@ function generateTextureContent (outputDir) {
   const blocksItems = require(outputDir + '/items_textures.json').concat(require(outputDir + '/blocks_textures.json'))
   const arr = blocksItems.map(b => ({
     name: b.name,
-    texture: b.texture == null ? null
+    texture: b.texture == null
+      ? null
       : ('data:image/png;base64,' + fs.readFileSync(outputDir + '/' + b.texture.replace('item/', 'items/').replace('block/', 'blocks/').replace(/minecraft:/, '') + '.png', 'base64'))
   }))
   fs.writeFileSync(outputDir + '/texture_content.json', JSON.stringify(arr, null, 2))
