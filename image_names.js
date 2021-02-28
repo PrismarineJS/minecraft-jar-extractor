@@ -297,13 +297,16 @@ function getModels (unzippedFilesDir, blocksStatesPath, blocksModelsPath, blockM
   fs.writeFileSync(blocksModelsPath, JSON.stringify(models, null, 2))
 }
 
-function copyTextures (unzippedFilesDir, outputDir, minecraftVersion) {
-  const recentVersion = minecraftVersion.startsWith('1.13') || minecraftVersion.startsWith('1.14') || minecraftVersion.startsWith('1.15') || minecraftVersion.startsWith('1.16')
-  const inputBlocksDir = recentVersion ? 'block' : 'blocks'
-  const inputItemsDir = recentVersion ? 'item' : 'items'
-
-  fs.copySync(unzippedFilesDir + '/assets/minecraft/textures/' + inputBlocksDir, outputDir + '/blocks')
-  fs.copySync(unzippedFilesDir + '/assets/minecraft/textures/' + inputItemsDir, outputDir + '/items')
+const textureMappings = {
+  block: 'blocks',
+  item: 'items'
+}
+function copyTextures (unzippedFilesDir, outputDir) {
+  const textures = unzippedFilesDir + '/assets/minecraft/textures/'
+  for (const file of fs.readdirSync(textures)) {
+    const outName = textureMappings[file] ? textureMappings[file] : file
+    fs.copySync(textures + file, outputDir + '/' + outName)
+  }
 }
 
 function generateTextureContent (outputDir) {
@@ -327,7 +330,7 @@ function extract (minecraftVersion, outputDir, temporaryDir, cb) {
     getItems(unzippedFilesDir, outputDir + '/items_textures.json', itemMapping[minecraftVersion], minecraftVersion)
     getBlocks(unzippedFilesDir, outputDir + '/blocks_textures.json', blockMapping[minecraftVersion], minecraftVersion)
     getModels(unzippedFilesDir, outputDir + '/blocks_states.json', outputDir + '/blocks_models.json', blockMapping[minecraftVersion], minecraftVersion)
-    copyTextures(unzippedFilesDir, outputDir, minecraftVersion)
+    copyTextures(unzippedFilesDir, outputDir)
     generateTextureContent(outputDir)
     cb()
   })

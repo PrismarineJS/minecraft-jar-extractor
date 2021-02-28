@@ -1,5 +1,5 @@
 const fernflower = require('fernflower')
-const promisify = require('es6-promisify')
+const promisify = require('util').promisify
 const downloadServer = promisify(require('minecraft-wrap').downloadServer)
 const path = require('path')
 const mkdirp = promisify(require('mkdirp'))
