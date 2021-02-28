@@ -298,8 +298,8 @@ function getModels (unzippedFilesDir, blocksStatesPath, blocksModelsPath, blockM
 }
 
 const textureMappings = {
-  blocks: 'block',
-  items: 'item'
+  block: 'blocks',
+  item: 'items'
 }
 function copyTextures (unzippedFilesDir, outputDir) {
   const textures = unzippedFilesDir + '/assets/minecraft/textures/'
