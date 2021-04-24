@@ -22,8 +22,8 @@
     "minecraft-data": "^2.34.0",
     "minecraft-wrap": "^1.2.3",
     "mkdirp": "^0.5.1",
+    "node-fetch": "^2.6.1",
     "prismarine-loottable": "^1.0.0",
-    "request": "^2.88.2"
   },
   "keywords": [
     "minecraft",
