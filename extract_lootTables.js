@@ -81,6 +81,7 @@ function handle (dataFolder, mcDataFolder, version) {
 
   const raw = path.resolve(dataFolder + '/data/loot_tables')
   const dataPath = path.resolve(mcDataFolder + '/data/pc/' + version)
+  fs.mkdirSync(dataPath, { recursive: true })
 
   let entryCount = 0
   entryCount += generate(path.join(raw, 'blocks'), path.join(dataPath, 'blockLoot.json'), extractBlockTable)
