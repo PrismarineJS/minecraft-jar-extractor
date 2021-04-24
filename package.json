@@ -23,7 +23,7 @@
     "minecraft-wrap": "^1.2.3",
     "mkdirp": "^0.5.1",
     "node-fetch": "^2.6.1",
-    "prismarine-loottable": "^1.0.0",
+    "prismarine-loottable": "^1.0.0"
   },
   "keywords": [
     "minecraft",
