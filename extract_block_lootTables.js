@@ -33,52 +33,40 @@ function extractDropIds (itemData, lootTable) {
 
   return dropIds
 }
+/**
+ * adds drops to a blocks.json
+ * @param {string} outPath path to folder with blocks.json & items.json
+ * @param {string} inPath extracted data
+ */
+function handle (outPath, inPath) {
+  const outPathResolved = path.resolve(outPath)
+  const dataFolder = path.join(inPath, 'data', 'loot_tables', 'blocks')
 
-function handle (dataFolder, mcDataFolder, version) {
-  dataFolder += '/' + version
+  const blocksFilePath = path.join(outPathResolved, 'blocks.json')
+  const itemDataPath = path.join(outPathResolved, 'items.json')
 
-  const raw = path.resolve(dataFolder + '/data/loot_tables/blocks')
-
-  const blockDataPath = path.resolve(
-    mcDataFolder + '/data/pc/' + version + '/blocks.json'
-  )
-
-  const itemDataPath = path.resolve(
-    mcDataFolder + '/data/pc/' + version + '/items.json'
-  )
-
-  const blockData = require(blockDataPath)
+  const blockData = require(blocksFilePath)
   const itemData = require(itemDataPath)
 
-  let fileCount = 0
   for (const prop in blockData) {
     const block = blockData[prop]
 
-    const inputPath = path.join(raw, block.name + '.json')
+    const inputPath = path.join(dataFolder, block.name + '.json')
     if (!fs.existsSync(inputPath)) {
       block.drops = []
       continue
     }
 
-    fileCount++
-
     const lootTable = require(inputPath)
     block.drops = extractDropIds(itemData, lootTable)
   }
 
-  fs.writeFileSync(blockDataPath, JSON.stringify(blockData, null, 2))
-  console.log(`Version ${version} finished. (${fileCount} files processed)`)
+  fs.writeFileSync(blocksFilePath, JSON.stringify(blockData, null, 2))
 }
 
-if (process.argv.length !== 5) {
-  console.log(
-    'Usage: node extract_block_lootTables.js <version1,version2,...> <extractedDataFolder> <mcDataFolder>'
-  )
+if (!process.argv[2] || !process.argv[3]) {
+  console.log('Usage: extract_block_lootTables.js <jsonPath> <dataPath>')
   process.exit(1)
 }
 
-const versions = process.argv[2].split(',')
-const dataFolder = path.resolve(process.argv[3])
-const mcDataFolder = path.resolve(process.argv[4])
-
-for (const version of versions) handle(dataFolder, mcDataFolder, version)
+handle(process.argv[2], process.argv[3])
