@@ -40,6 +40,15 @@ Make sure to first extract the data folder from Minecraft jar if not done alread
 Next you can extract the actual loot table data to Minecraft-Data using:
 `node extract_lootTables.js <version1,version2,...> <extractedDataFolder> <mcDataFolder>`
 
+## add defaultState to a blocks.json
+
+1. `node patch_states.js <version> blocks.json`
+
+## add more accuracte drops to a blocks.json
+
+1. `node extract_datafolder.js <version> out temp`
+2. `node extract_block_lootTables.js <directory with blocks.json and items.json> out/<version>/`
+
 ## History
 
 ### 0.0.0
