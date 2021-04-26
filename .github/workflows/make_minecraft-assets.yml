@@ -1,23 +1,23 @@
-name: Minecraft PC Data Dumper
+name: Minecraft PC Assets Dumper
 
 on:
   workflow_dispatch:
-#     inputs:
-#       minecraft-version:
-#         description: 'Version of minecraft to dump data from'
-#         default: '1.16.5'
-#         required: true
-
+    inputs:
+      minecraft-version:
+        description: 'Version of minecraft to dump assets from'
+        default: '1.16.5'
+        required: true
+        
 jobs:
-  use-tool:
+  greet:
     runs-on: ubuntu-latest
     steps:
-      - name: checkout
-        run: actions/checkout@v2
-      - name: run tool
-        run: node image_names.js ${{ github.event.inputs.minecraft-version }} out temp
-      - name: upload to artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: data
-          path: out/${{ github.event.inputs.minecraft-version }}
+    - name: checkout
+      run: actions/checkout@v2
+    - name: run tool
+      run: node image_names.js ${{ github.event.inputs.minecraft-version }} out temp
+    - name: upload to artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: data
+        path: out/${{ github.event.inputs.minecraft-version }}
