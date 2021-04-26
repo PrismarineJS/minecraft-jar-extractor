@@ -2,11 +2,11 @@ name: Minecraft PC Data Dumper
 
 on:
   workflow_dispatch:
-    inputs:
-      minecraft-version:
-        description: 'Version of minecraft to dump data from'
-        default: '1.16.5'
-        required: true
+#     inputs:
+#       minecraft-version:
+#         description: 'Version of minecraft to dump data from'
+#         default: '1.16.5'
+#         required: true
 
 jobs:
   use-tool:
