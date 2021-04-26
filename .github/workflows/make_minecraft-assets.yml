@@ -23,8 +23,7 @@ jobs:
           path: out/${{ github.event.inputs.minecraft-version }}
   make-pr:
     runs-on: ubuntu-latest
-    needs: 
-    - use-tool
+    needs: use-tool
     steps:
       - name: Checkout
         uses: actions/checkout@v2
