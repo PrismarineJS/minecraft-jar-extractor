@@ -15,7 +15,7 @@
   "dependencies": {
     "async": "~2.6.3",
     "deep-equal": "^2.0.3",
-    "es6-promisify": "^6.1.1",
+    "es6-promisify": "^7.0.0",
     "extract-zip": "^2.0.1",
     "fernflower": "^1.1.0",
     "fs-extra": "^10.0.0",
