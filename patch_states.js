@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const fetch = require('node-fetch')
+const extractDataFromMC = require('./extract_data_from_minecraft')
 
 /**
  * Adds defaultState to blocks.json
@@ -10,8 +10,8 @@ const fetch = require('node-fetch')
 async function handle (version, outPath) {
   const blockFile = path.resolve(outPath)
   const blocks = require(blockFile)
-
-  const data = await (await fetch(`https://apimon.de/mcdata/${version}/blocks.json`)).json()
+  await extractDataFromMC()
+  const data = require('./minecraft_extracted_data/minecraft_generated_blocks.json')
 
   if (!data) {
     console.log('No api for ' + version)
@@ -54,6 +54,7 @@ async function handle (version, outPath) {
   }
 
   fs.writeFileSync(blockFile, JSON.stringify(blocks, null, 2))
+  await fs.promises.rm(require('path').join('minecraft_extracted_data', 'extract_data_from_minecraft.json'))
 }
 
 if (!process.argv[2] || !process.argv[3]) {
