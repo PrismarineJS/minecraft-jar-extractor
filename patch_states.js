@@ -10,7 +10,7 @@ const extractDataFromMC = require('./extract_data_from_minecraft')
 async function handle (version, outPath) {
   const blockFile = path.resolve(outPath)
   const blocks = require(blockFile)
-  await extractDataFromMC()
+  await extractDataFromMC(version)
   const data = require('./minecraft_extracted_data/minecraft_generated_blocks.json')
 
   if (!data) {
