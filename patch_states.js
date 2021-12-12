@@ -54,7 +54,7 @@ async function handle (version, outPath) {
   }
 
   fs.writeFileSync(blockFile, JSON.stringify(blocks, null, 2))
-  await fs.promises.rm(require('path').join('minecraft_extracted_data', 'extract_data_from_minecraft.json'))
+  await fs.promises.rm(path.join('minecraft_extracted_data', 'extract_data_from_minecraft.json'))
 }
 
 if (!process.argv[2] || !process.argv[3]) {

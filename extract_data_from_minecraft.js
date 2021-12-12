@@ -5,7 +5,7 @@ const { execSync } = require('child_process')
 const path = require('path')
 const OUT_DIR = 'minecraft_extracted_data'
 const rm = async path => fs.rm(path, { force: true, recursive: true })
-async function main () {
+module.exports = async () => {
   try { await fs.mkdir(OUT_DIR) } catch (e) {}
   try { await rm('server.jar') } catch (e) {}
   await downloadServer('1.18', path.join(OUT_DIR, 'server.jar'))
@@ -22,5 +22,3 @@ async function main () {
     await rm(path.join(OUT_DIR, 'server.jar'))
   } catch (e) {}
 }
-
-module.exports = main
