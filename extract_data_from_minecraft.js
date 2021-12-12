@@ -6,7 +6,7 @@ const path = require('path')
 const mcData = require('minecraft-data')
 const OUT_DIR = 'minecraft_extracted_data'
 const rm = async path => fs.rm(path, { force: true, recursive: true })
-const a = async (version) => {
+module.exports = async (version) => {
   try { await fs.mkdir(OUT_DIR) } catch (e) {}
   try { await rm('server.jar') } catch (e) {}
   await downloadServer(version, path.join(OUT_DIR, 'server.jar'))
@@ -25,5 +25,3 @@ const a = async (version) => {
     await rm(path.join(OUT_DIR, 'server.jar'))
   } catch (e) {}
 }
-
-a('1.18')
