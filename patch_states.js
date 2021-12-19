@@ -11,7 +11,9 @@ async function handle (version, outPath) {
   const blockFile = path.resolve(outPath)
   const blocks = require(blockFile)
   await extractDataFromMC(version)
-  const data = require('./minecraft_extracted_data/minecraft_generated_blocks.json')
+  const data = require('./minecraft_extracted_data/minecraft_generated_blocks.json').map(block => {
+    return {...block, drops: block.drops.filter(x => x !== null) }
+  })
 
   if (!data) {
     console.log('No api for ' + version)
