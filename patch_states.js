@@ -11,10 +11,7 @@ async function handle (version, outPath) {
   const blockFile = path.resolve(outPath)
   const blocks = require(blockFile)
   await extractDataFromMC(version)
-  const data = require('./minecraft_extracted_data/minecraft_generated_blocks.json').map(block => {
-    block.drops = block.drops.filter(x => x !== null)
-    return block
-  })
+  const data = require('./minecraft_extracted_data/minecraft_generated_blocks.json')
 
   if (!data) {
     console.log('No api for ' + version)
@@ -54,10 +51,11 @@ async function handle (version, outPath) {
         break
       }
     }
+    block.drops = block.drops.filter(x => x !== null)
   }
 
   fs.writeFileSync(blockFile, JSON.stringify(blocks, null, 2))
-  await fs.promises.rm(path.join('minecraft_extracted_data', 'extract_data_from_minecraft.json'))
+  await fs.promises.rm(path.join('minecraft_extracted_data', 'minecraft_generated_blocks.json'))
 }
 
 if (!process.argv[2] || !process.argv[3]) {
