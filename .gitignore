@@ -3,3 +3,6 @@ package-lock.json
 versions
 .vscode
 minecraft_extracted_data
+node_modules
+out
+temp
