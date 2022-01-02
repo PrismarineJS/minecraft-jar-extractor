@@ -3,7 +3,7 @@ const path = require('path')
 const extractDataFromMC = require('./extract_data_from_minecraft')
 
 /**
- * Adds defaultState to blocks.json
+ * Adds/fixes state information to blocks.json
  * @param {string} inFile path to the blocks.json
  */
 
@@ -43,8 +43,9 @@ async function handle (version, outPath) {
       }
     }
 
-    // Set defaultState
-    block.defaultState = block.minState
+    block.minStateId = apiblock.states[0].id
+    block.maxStateId = apiblock.states[apiblock.states.length - 1].id
+    block.defaultState = block.minStateId
     for (const state of apiblock.states) {
       if (state.default) {
         block.defaultState = state.id
