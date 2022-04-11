@@ -1,6 +1,6 @@
 {
   "name": "minecraft-jar-extractor",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Extract structured data from the minecraft jar",
   "main": "protocol_extractor.js",
   "scripts": {

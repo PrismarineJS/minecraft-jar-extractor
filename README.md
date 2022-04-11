@@ -51,6 +51,10 @@ Next you can extract the actual loot table data to Minecraft-Data using:
 
 ## History
 
+### 1.0.0
+
+* Everything
+
 ### 0.0.0
 
 - imported from minecraft-data + description added
