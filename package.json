@@ -18,7 +18,7 @@
     "es6-promisify": "^7.0.0",
     "extract-zip": "^2.0.1",
     "fernflower": "^1.1.0",
-    "fs-extra": "^10.0.0",
+    "fs-extra": "^11.0.0",
     "minecraft-data": "^3.0.0",
     "minecraft-wrap": "^1.2.3",
     "mkdirp": "^0.5.1",
