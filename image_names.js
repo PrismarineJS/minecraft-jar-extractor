@@ -229,6 +229,11 @@ function extractModel (name, path, full = false) {
   } else {
     try {
       name = name.replace(/^(?:block\/)?minecraft:/, '')
+      path = path.replace('items/', 'models/')
+      if (!fs.existsSync(path + name + '.json')) {
+        name = name.replace('block/', '').replace('item/', '')
+        path = path.replace('models/', 'items/')
+      }
       const t = JSON.parse(fs.readFileSync(path + name + '.json', 'utf8'))
       if (full) return t
       if (t.textures) {
@@ -239,6 +244,16 @@ function extractModel (name, path, full = false) {
           return null
         }
         return extractModel(t.parent, path)
+      }
+      if (t.model) {
+        switch (t.model.type) {
+            case 'minecraft:special': return extractModel(t.model.base, path)
+            case 'minecraft:select': return extractModel(t.model.fallback.model || t.model.fallback.entries[0].model.model, path)
+            case 'minecraft:model': return extractModel(t.model.model, path)
+            case 'minecraft:condition': return extractModel(t.model.on_false.fallback.model || t.model.on_false.fallback.entries[0].model.model, path)
+            case 'minecraft:range_dispatch': return extractModel(t.model.entries[0].model.model, path)
+            default: throw new Error('Unhandled type ' + t.model.type)
+        }
       }
       return null
     } catch (err) {
@@ -313,7 +328,7 @@ function generateTextureContent (outputDir) {
   const blocksItems = require(outputDir + '/items_textures.json').concat(require(outputDir + '/blocks_textures.json'))
   const arr = blocksItems.map(b => ({
     name: b.name,
-    texture: b.texture == null
+    texture: b.texture == null || b.texture === 'minecraft:missingno'
       ? null
       : ('data:image/png;base64,' + fs.readFileSync(outputDir + '/' + b.texture.replace('item/', 'items/').replace('block/', 'blocks/').replace(/minecraft:/, '') + '.png', 'base64'))
   }))
