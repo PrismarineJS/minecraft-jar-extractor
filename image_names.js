@@ -247,12 +247,12 @@ function extractModel (name, path, full = false) {
       }
       if (t.model) {
         switch (t.model.type) {
-            case 'minecraft:special': return extractModel(t.model.base, path)
-            case 'minecraft:select': return extractModel(t.model.fallback.model || t.model.fallback.entries[0].model.model, path)
-            case 'minecraft:model': return extractModel(t.model.model, path)
-            case 'minecraft:condition': return extractModel(t.model.on_false.fallback.model || t.model.on_false.fallback.entries[0].model.model, path)
-            case 'minecraft:range_dispatch': return extractModel(t.model.entries[0].model.model, path)
-            default: throw new Error('Unhandled type ' + t.model.type)
+          case 'minecraft:special': return extractModel(t.model.base, path)
+          case 'minecraft:select': return extractModel(t.model.fallback.model || t.model.fallback.entries[0].model.model, path)
+          case 'minecraft:model': return extractModel(t.model.model, path)
+          case 'minecraft:condition': return extractModel(t.model.on_false.fallback.model || t.model.on_false.fallback.entries[0].model.model, path)
+          case 'minecraft:range_dispatch': return extractModel(t.model.entries[0].model.model, path)
+          default: throw new Error('Unhandled type ' + t.model.type)
         }
       }
       return null
@@ -285,7 +285,7 @@ function getBlocks (unzippedFilesDir, blocksTexturesPath, blockMapping, version)
     const texture = extractModel(!model ? null : (model.startsWith('block/') ? model : 'block/' + model), unzippedFilesDir + '/assets/minecraft/models/')
     return {
       name: block.name,
-      blockState: blockState,
+      blockState,
       model: !model ? null : model.replace('block/', 'blocks/'),
       texture: !texture ? null : texture.replace('block/', 'blocks/')
     }

@@ -58,7 +58,7 @@ function linesToProtocol (cleanLines, cb) {
       const theClass = results[2]
       const id = idToHexString(direction === 'toClient' ? currentToClientId : currentToServerId)
       if (protocol[currentState][direction] === undefined) { protocol[currentState][direction] = {} }
-      protocol[currentState][direction][theClass] = { id: id, fields: getFields(theClass) }
+      protocol[currentState][direction][theClass] = { id, fields: getFields(theClass) }
       if (direction === 'toClient') currentToClientId++
       else currentToServerId++
     }
