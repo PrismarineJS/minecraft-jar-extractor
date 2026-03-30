@@ -51,6 +51,18 @@ Next you can extract the actual loot table data to Minecraft-Data using:
 
 ## History
 
+### 1.1.0
+* [Update CI to Node 24 (#65)](https://github.com/PrismarineJS/minecraft-jar-extractor/commit/2b88f3f9e2431dcdb45e02f56ac6cf23c6176b49) (thanks @rom1504)
+* [Fix publish workflow for trusted publishing (#64)](https://github.com/PrismarineJS/minecraft-jar-extractor/commit/9bb45e69d568db6d9bca24668980c124ef712a3d) (thanks @rom1504)
+* [Switch to trusted publishing via OIDC (#63)](https://github.com/PrismarineJS/minecraft-jar-extractor/commit/82f74c76d24d7b72c4de0b951543abc870ecdc66) (thanks @rom1504)
+* [Handle new model structure in 1.21.4 (#61)](https://github.com/PrismarineJS/minecraft-jar-extractor/commit/51aab330638862102dc962b22c714799f4a42699) (thanks @SuperGamerTron)
+* [node 22 (#60)](https://github.com/PrismarineJS/minecraft-jar-extractor/commit/1406937ab4406512ac10577fbc59f32d75cb37b0) (thanks @rom1504)
+* [Add command gh workflow allowing to use release command in comments (#59)](https://github.com/PrismarineJS/minecraft-jar-extractor/commit/f1cf968e20c46f56efbfc179d50dc9cf4403878c) (thanks @rom1504)
+* [Update to node 18.0.0 (#58)](https://github.com/PrismarineJS/minecraft-jar-extractor/commit/0cec5e9b9dec42785e83aba0da9f5e1128f65d0f) (thanks @rom1504)
+* [Bump mkdirp from 0.5.6 to 2.1.3 (#55)](https://github.com/PrismarineJS/minecraft-jar-extractor/commit/f40fbdd2bc7759143e7d35257b7124ea361f6730) (thanks @dependabot[bot])
+* [Bump fs-extra from 10.1.0 to 11.1.0 (#52)](https://github.com/PrismarineJS/minecraft-jar-extractor/commit/c5726c442167227881ad654c270301d63b24c140) (thanks @dependabot[bot])
+* [Bump standard from 16.0.4 to 17.0.0 (#50)](https://github.com/PrismarineJS/minecraft-jar-extractor/commit/97eafe70f2d3d5abc6e0472dcf2932eb36e10be7) (thanks @dependabot[bot])
+
 ### 1.0.0
 
 * Everything
