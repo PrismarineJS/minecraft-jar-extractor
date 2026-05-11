@@ -228,6 +228,8 @@ function extractModel (name, path, full = false) {
     return null
   } else {
     try {
+      name = normalizeModelReference(name)
+      if (name === null) return null
       name = name.replace(/^(?:block\/)?minecraft:/, '')
       path = path.replace('items/', 'models/')
       if (!fs.existsSync(path + name + '.json')) {
@@ -246,14 +248,7 @@ function extractModel (name, path, full = false) {
         return extractModel(t.parent, path)
       }
       if (t.model) {
-        switch (t.model.type) {
-          case 'minecraft:special': return extractModel(t.model.base, path)
-          case 'minecraft:select': return extractModel(t.model.fallback.model || t.model.fallback.entries[0].model.model, path)
-          case 'minecraft:model': return extractModel(t.model.model, path)
-          case 'minecraft:condition': return extractModel(t.model.on_false.fallback.model || t.model.on_false.fallback.entries[0].model.model, path)
-          case 'minecraft:range_dispatch': return extractModel(t.model.entries[0].model.model, path)
-          default: throw new Error('Unhandled type ' + t.model.type)
-        }
+        return extractModel(normalizeModelReference(t.model), path)
       }
       return null
     } catch (err) {
@@ -263,15 +258,42 @@ function extractModel (name, path, full = false) {
   }
 }
 
+function normalizeModelReference (model) {
+  if (!model) return null
+  if (typeof model === 'string') return model
+  if (Array.isArray(model)) return normalizeModelReference(model[0])
+
+  switch (model.type) {
+    case 'minecraft:model':
+      return normalizeModelReference(model.model)
+    case 'minecraft:special':
+      return normalizeModelReference(model.base || model.model)
+    case 'minecraft:select':
+      return normalizeModelReference(model.fallback) ||
+        normalizeModelReference(model.cases && model.cases[0] && model.cases[0].model)
+    case 'minecraft:condition':
+      return normalizeModelReference(model.on_false) || normalizeModelReference(model.on_true)
+    case 'minecraft:range_dispatch':
+      return normalizeModelReference(model.fallback) ||
+        normalizeModelReference(model.entries && model.entries[0] && model.entries[0].model)
+    case 'minecraft:composite':
+      return normalizeModelReference(model.models && model.models.find(m => m.type === 'minecraft:model')) ||
+        normalizeModelReference(model.models && model.models[0])
+    default:
+      return normalizeModelReference(model.model || model.base)
+  }
+}
+
 function getItems (unzippedFilesDir, itemsTexturesPath, itemMapping, version) {
   const mcData = require('minecraft-data')(version)
   const itemTextures = mcData.itemsArray.map(item => {
     const model = (itemMapping !== undefined && itemMapping[item.name] ? itemMapping[item.name] : item.name).replace(/minecraft:/, '')
     const texture = extractModel('item/' + model, unzippedFilesDir + '/assets/minecraft/models/')
+    const textureName = typeof texture === 'string' ? texture : null
     return {
       name: item.name,
       model: !model ? null : model.replace('item/', 'items/'),
-      texture: !texture ? null : texture.replace('item/', 'items/')
+      texture: !textureName ? null : textureName.replace('item/', 'items/')
     }
   })
   fs.writeFileSync(itemsTexturesPath, JSON.stringify(itemTextures, null, 2))
@@ -283,11 +305,12 @@ function getBlocks (unzippedFilesDir, blocksTexturesPath, blockMapping, version)
     const blockState = (blockMapping !== undefined && blockMapping[block.name] ? blockMapping[block.name] : block.name).replace(/minecraft:/, '')
     const model = extractBlockState(blockState, unzippedFilesDir + '/assets/minecraft/blockstates/')
     const texture = extractModel(!model ? null : (model.startsWith('block/') ? model : 'block/' + model), unzippedFilesDir + '/assets/minecraft/models/')
+    const textureName = typeof texture === 'string' ? texture : null
     return {
       name: block.name,
       blockState,
       model: !model ? null : model.replace('block/', 'blocks/'),
-      texture: !texture ? null : texture.replace('block/', 'blocks/')
+      texture: !textureName ? null : textureName.replace('block/', 'blocks/')
     }
   })
   fs.writeFileSync(blocksTexturesPath, JSON.stringify(blockModel, null, 2))
@@ -328,7 +351,7 @@ function generateTextureContent (outputDir) {
   const blocksItems = require(outputDir + '/items_textures.json').concat(require(outputDir + '/blocks_textures.json'))
   const arr = blocksItems.map(b => ({
     name: b.name,
-    texture: b.texture == null || b.texture === 'minecraft:missingno'
+    texture: b.texture == null || b.texture === 'minecraft:missingno' || !fs.existsSync(outputDir + '/' + b.texture.replace('item/', 'items/').replace('block/', 'blocks/').replace(/minecraft:/, '') + '.png')
       ? null
       : ('data:image/png;base64,' + fs.readFileSync(outputDir + '/' + b.texture.replace('item/', 'items/').replace('block/', 'blocks/').replace(/minecraft:/, '') + '.png', 'base64'))
   }))
