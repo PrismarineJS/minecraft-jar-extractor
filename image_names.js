@@ -223,6 +223,11 @@ function extractBlockState (name, path, full = false) {
   }
 }
 
+function unwrapTexture (texture) {
+  // 26.x wraps some model texture refs in objects ({ sprite, force_translucent, ... })
+  return texture !== null && typeof texture === 'object' ? texture.sprite : texture
+}
+
 function extractModel (name, path, full = false) {
   if (name === null) {
     return null
@@ -237,7 +242,7 @@ function extractModel (name, path, full = false) {
       const t = JSON.parse(fs.readFileSync(path + name + '.json', 'utf8'))
       if (full) return t
       if (t.textures) {
-        return t.textures[Object.keys(t.textures)[0]]
+        return unwrapTexture(t.textures[Object.keys(t.textures)[0]])
       }
       if (t.parent) {
         if (t.parent.startsWith('builtin/')) {
